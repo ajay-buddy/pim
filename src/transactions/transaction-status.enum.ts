@@ -1,0 +1,4 @@
+export enum TRANSACTION_STATUS {
+  INWARD = 'INWARD',
+  OUTWARD = 'OUTWARD',
+}
