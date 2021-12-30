@@ -1,0 +1,8 @@
+export enum PROJECTTYPE {
+  SELF = 'SELF',
+  COMPANY = 'COMPANY',
+}
+export enum EMPLOYMENTTYPE {
+  PART_TIME = 'PART_TIME',
+  FULL_TIME = 'FULL_TIME',
+}

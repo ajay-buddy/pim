@@ -14,7 +14,13 @@ import { CustomerModule } from './customer/customer.module';
 import { NotificationModule } from './notification/notification.module';
 import { ConfigModule } from '@nestjs/config';
 import { AppModule1 } from './app/app.module';
-
+import { ProfileModule } from './profile/profile.module';
+import { TagModule } from './tag/tag.module';
+import { ExperienceModule } from './experience/experience.module';
+import { ProjectModule } from './project/project.module';
+import { EducationModule } from './education/education.module';
+import { JobModule } from './job/job.module';
+import { ApplicationModule } from './application/application.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -38,6 +44,14 @@ import { AppModule1 } from './app/app.module';
     CustomerModule,
     NotificationModule,
     AppModule1,
+
+    ProfileModule,
+    TagModule,
+    ExperienceModule,
+    ProjectModule,
+    EducationModule,
+    JobModule,
+    ApplicationModule,
   ],
 })
 export class AppModule {}

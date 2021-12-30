@@ -1,0 +1,3 @@
+export enum EDUCATIONTYPE {
+  FULL_TIME = 'FULL_TIME',
+}

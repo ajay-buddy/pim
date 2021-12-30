@@ -1,4 +1,5 @@
 import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { USERTYPE } from '../enum/user-type.enum';
 
 export class AuthCredentialsDto {
   @IsString()
@@ -13,4 +14,6 @@ export class AuthCredentialsDto {
     message: 'Password too weak!!',
   })
   password: string;
+  user_type: USERTYPE;
+  user_id?: string;
 }
