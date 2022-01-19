@@ -6,6 +6,9 @@ import { CreateEducationDto } from './dto/create-education-dto';
 import { UserRepository } from 'src/auth/user.repository';
 import { TagRepository } from 'src/tag/tag.repository';
 import { User } from 'src/auth/user.entity';
+import { CollageRepository } from '../collage/collage.repository';
+import { UniversityRepository } from '../university/university.repository';
+import { CourseRepository } from '../course/course.repository';
 
 @Injectable()
 export class EducationService {
@@ -18,6 +21,15 @@ export class EducationService {
 
     @InjectRepository(TagRepository)
     private tagRepository: TagRepository,
+
+    @InjectRepository(CollageRepository)
+    private collageRepository: CollageRepository,
+
+    @InjectRepository(UniversityRepository)
+    private universityRepository: UniversityRepository,
+
+    @InjectRepository(CourseRepository)
+    private courseRepository: CourseRepository,
   ) {}
 
   async getAllEducation(user: User): Promise<Education[]> {
@@ -28,6 +40,11 @@ export class EducationService {
       order: {
         start: 'DESC',
       },
+      relations: [
+        'education_collage',
+        'education_course',
+        'education_university',
+      ],
     });
   }
   async getEducationByUser(user: User, id: string): Promise<Education[]> {
@@ -39,6 +56,11 @@ export class EducationService {
       order: {
         start: 'DESC',
       },
+      relations: [
+        'education_collage',
+        'education_course',
+        'education_university',
+      ],
     });
   }
 
@@ -73,6 +95,22 @@ export class EducationService {
       education.education_tags = await this.tagRepository.findByIds(
         createEducationDto.education_tags,
       );
+    }
+    if (createEducationDto.education_collage) {
+      education.education_collage = await this.collageRepository.findOne({
+        id: createEducationDto.education_collage,
+      });
+    }
+
+    if (createEducationDto.education_university) {
+      education.education_university = await this.universityRepository.findOne({
+        id: createEducationDto.education_university,
+      });
+    }
+    if (createEducationDto.education_course) {
+      education.education_course = await this.courseRepository.findOne({
+        id: createEducationDto.education_course,
+      });
     }
     education.updated_by = user;
 

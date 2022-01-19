@@ -5,16 +5,20 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import {
   ConflictException,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Profile } from 'src/profile/profile.entity';
+import { ProfileService } from '../profile/profile.service';
+import { CreateProfileDto } from '../profile/dto/create-profile-dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   async signUp(
     authCredentialsDto: AuthCredentialsDto,
     login_user: User,
-  ): Promise<void> {
+    profileService: ProfileService,
+  ): Promise<{ username: string }> {
     const { username, password, user_type } = authCredentialsDto;
     const salt = await bcrypt.genSalt();
     const user = new User();
@@ -25,14 +29,29 @@ export class UserRepository extends Repository<User> {
     user.user_type = user_type;
     try {
       const user_created = await user.save();
-      const profile = new Profile();
-      console.log(login_user, user_created);
-      profile.belongs_to = user_created;
-      profile.created_by = login_user || user_created;
-      profile.updated_by = login_user || user_created;
-      profile.email = username;
-      await profile.save();
+      if (authCredentialsDto.profile) {
+        authCredentialsDto.profile.user_id = user_created.id;
+        const profile = await profileService.createProfile(
+          authCredentialsDto.profile,
+          user_created,
+        );
+        user_created.profile = profile;
+        user_created.save();
+      } else {
+        const data: CreateProfileDto = {
+          id: null,
+          user_type: user_created.user_type,
+          name: user_created.username,
+          email: user_created.username,
+          user_id: user_created.id,
+        };
+        const profile = await profileService.createProfile(data, user_created);
+        user_created.profile = profile;
+        user_created.save();
+      }
+      return { username };
     } catch (error) {
+      console.log(error);
       if (error.code === '23505') {
         throw new ConflictException('Username already exists');
       } else {
@@ -51,10 +70,11 @@ export class UserRepository extends Repository<User> {
       if (user && (await user.validatePassword(password))) {
         return { username: user.username, id: user.id };
       } else {
-        throw new UnauthorizedException();
+        throw new NotFoundException();
       }
     } catch (err) {
-      throw new InternalServerErrorException();
+      console.log('err', err);
+      throw new NotFoundException();
     }
   }
 

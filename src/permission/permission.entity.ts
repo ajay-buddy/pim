@@ -1,4 +1,3 @@
-import { Product } from 'src/products/products.entity';
 import {
   BaseEntity,
   Column,

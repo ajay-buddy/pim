@@ -19,7 +19,7 @@ export class TagService {
 
   async getMatchTag(key: string): Promise<Tag[]> {
     return this.tagRepository.find({
-      name: Like(`${key}%`),
+      name: Like(`%${key}%`),
     });
   }
 

@@ -7,6 +7,7 @@ export class CreateProjectDto {
   end: string;
   description: string;
   company_name: string;
+  project_company: string;
   type: PROJECTTYPE;
   project_tags: string[];
   user_id?: string;

@@ -5,6 +5,7 @@ import { ExperienceRepository } from './experience.repository';
 import { ExperienceService } from './experience.service';
 import { TagRepository } from '../tag/tag.repository';
 import { UserRepository } from 'src/auth/user.repository';
+import { CompanyRepository } from 'src/company/company.repository';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { UserRepository } from 'src/auth/user.repository';
       ExperienceRepository,
       UserRepository,
       TagRepository,
+      CompanyRepository,
     ]),
   ],
 

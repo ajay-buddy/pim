@@ -5,6 +5,9 @@ import { TagRepository } from 'src/tag/tag.repository';
 import { EducationController } from './education.controller';
 import { EducationRepository } from './education.repository';
 import { EducationService } from './education.service';
+import { CollageRepository } from '../collage/collage.repository';
+import { UniversityRepository } from '../university/university.repository';
+import { CourseRepository } from '../course/course.repository';
 
 @Module({
   imports: [
@@ -12,6 +15,9 @@ import { EducationService } from './education.service';
       EducationRepository,
       UserRepository,
       TagRepository,
+      CollageRepository,
+      UniversityRepository,
+      CourseRepository,
     ]),
   ],
   controllers: [EducationController],

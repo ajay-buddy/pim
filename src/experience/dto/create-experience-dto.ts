@@ -6,6 +6,7 @@ export class CreateExperienceDto {
   end: string;
   description: string;
   company_name: string;
+  experience_company: string;
   type: EMPLOYMENTTYPE;
   is_present: boolean;
   experience_tags: string[];

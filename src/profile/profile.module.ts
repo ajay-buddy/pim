@@ -4,7 +4,7 @@ import { UserRepository } from 'src/auth/user.repository';
 import { ProfileController } from './profile.controller';
 import { ProfileRepository } from './profile.repository';
 import { ProfileService } from './profile.service';
-import { TagRepository } from '../tag/tag.repository';
+import { TagRepository } from 'src/tag/tag.repository';
 
 @Module({
   imports: [

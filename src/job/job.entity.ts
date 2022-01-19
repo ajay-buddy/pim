@@ -1,7 +1,5 @@
 import { User } from 'src/auth/user.entity';
-import { Product } from 'src/products/products.entity';
 import { Tag } from 'src/tag/tag.entity';
-import internal from 'stream';
 import {
   BaseEntity,
   Column,
@@ -18,6 +16,8 @@ import {
 } from 'typeorm';
 import { EMPLOYMENTTYPE } from './enum/employment_type.enum';
 import { Application } from '../application/application.entity';
+import { Company } from 'src/company/company.entity';
+import { Spoc } from 'src/spoc/spoc.entity';
 
 @Entity()
 export class Job extends BaseEntity {
@@ -26,20 +26,20 @@ export class Job extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   company_name: string;
 
-  @Column()
-  type: EMPLOYMENTTYPE;
-
-  @Column()
+  @Column({ nullable: true })
   is_active: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   vacancies: number;
+
+  @Column({ nullable: true })
+  jobCode: string;
 
   @Column({ default: 0 })
   applied_count: number;
@@ -48,9 +48,17 @@ export class Job extends BaseEntity {
   @JoinColumn()
   application: Application[];
 
+  @ManyToOne(() => Company, (company) => company.job)
+  @JoinTable()
+  job_company: Company;
+
   @ManyToMany(() => Tag, (tag) => tag.profile, { eager: true })
   @JoinTable()
   job_tags: Tag[];
+
+  @ManyToOne(() => Spoc, (spoc) => spoc.jobs)
+  @JoinColumn()
+  spoc: Spoc;
 
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn()
@@ -59,6 +67,21 @@ export class Job extends BaseEntity {
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn()
   updated_by: User;
+
+  @Column({ type: 'date', nullable: true })
+  req_date: Date;
+
+  @Column({ nullable: true })
+  req_id: string;
+
+  @Column({ nullable: true })
+  type: string;
+
+  @Column({ nullable: true })
+  submited_by: string;
+
+  @Column({ nullable: true })
+  priority: string;
 
   @CreateDateColumn({
     type: 'timestamp',

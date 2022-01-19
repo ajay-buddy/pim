@@ -6,6 +6,7 @@ import { CreateProjectDto } from './dto/create-project-dto';
 import { UserRepository } from 'src/auth/user.repository';
 import { TagRepository } from 'src/tag/tag.repository';
 import { User } from 'src/auth/user.entity';
+import { CompanyRepository } from '../company/company.repository';
 
 @Injectable()
 export class ProjectService {
@@ -18,6 +19,9 @@ export class ProjectService {
 
     @InjectRepository(TagRepository)
     private tagRepository: TagRepository,
+
+    @InjectRepository(CompanyRepository)
+    private companyRepository: CompanyRepository,
   ) {}
 
   async getAllProject(user: User): Promise<Project[]> {
@@ -28,6 +32,7 @@ export class ProjectService {
       order: {
         start: 'DESC',
       },
+      relations: ['project_company'],
     });
   }
   async getProjectByUser(user: User, id: string): Promise<Project[]> {
@@ -40,6 +45,7 @@ export class ProjectService {
       order: {
         start: 'DESC',
       },
+      relations: ['project_company'],
     });
   }
 
@@ -63,6 +69,11 @@ export class ProjectService {
       } else {
         project.belongs_to = user;
       }
+    }
+    if (createProjectDto.project_company) {
+      project.project_company = await this.companyRepository.findOne({
+        id: createProjectDto.project_company,
+      });
     }
     project.name = createProjectDto.name;
     project.start = createProjectDto.start;

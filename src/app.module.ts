@@ -1,16 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/type-orm-config';
-import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
-import { InventoryModule } from './inventory/inventory.module';
-import { OrdersModule } from './orders/orders.module';
-import { PurchaseModule } from './purchase/purchase.module';
-import { VendorsModule } from './vendors/vendors.module';
-import { TransactionsModule } from './transactions/transactions.module';
 import { BullModule } from '@nestjs/bull';
-import { CatagoryModule } from './catagory/catagory.module';
-import { CustomerModule } from './customer/customer.module';
 import { NotificationModule } from './notification/notification.module';
 import { ConfigModule } from '@nestjs/config';
 import { AppModule1 } from './app/app.module';
@@ -21,6 +13,14 @@ import { ProjectModule } from './project/project.module';
 import { EducationModule } from './education/education.module';
 import { JobModule } from './job/job.module';
 import { ApplicationModule } from './application/application.module';
+import { CompanyModule } from './company/company.module';
+import { CollageModule } from './collage/collage.module';
+import { UniversityModule } from './university/university.module';
+import { CourseModule } from './course/course.module';
+import { ActionModule } from './actions/action.module';
+import { StageModule } from './stages/stage.module';
+import { SpocModule } from './spoc/spoc.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,15 +33,7 @@ import { ApplicationModule } from './application/application.module';
         port: 6379,
       },
     }),
-    ProductsModule,
     AuthModule,
-    InventoryModule,
-    OrdersModule,
-    PurchaseModule,
-    VendorsModule,
-    TransactionsModule,
-    CatagoryModule,
-    CustomerModule,
     NotificationModule,
     AppModule1,
 
@@ -52,6 +44,14 @@ import { ApplicationModule } from './application/application.module';
     EducationModule,
     JobModule,
     ApplicationModule,
+    CompanyModule,
+    CollageModule,
+    UniversityModule,
+    CourseModule,
+    ActionModule,
+    StageModule,
+    SpocModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}

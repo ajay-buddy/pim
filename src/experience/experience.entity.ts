@@ -1,6 +1,6 @@
 import { User } from 'src/auth/user.entity';
+import { Company } from 'src/company/company.entity';
 import { EMPLOYMENTTYPE } from 'src/job/enum/employment_type.enum';
-import { Product } from 'src/products/products.entity';
 import { Tag } from 'src/tag/tag.entity';
 import {
   BaseEntity,
@@ -43,6 +43,10 @@ export class Experience extends BaseEntity {
   @ManyToMany(() => Tag, (tag) => tag.experience, { eager: true })
   @JoinTable()
   experience_tags: Tag[];
+
+  @ManyToOne(() => Company, (company) => company.experience)
+  @JoinTable()
+  experience_company: Company;
 
   @ManyToOne(() => User, (user) => user.experience)
   @JoinColumn()

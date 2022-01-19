@@ -6,6 +6,7 @@ import { CreateExperienceDto } from './dto/create-experience-dto';
 import { User } from 'src/auth/user.entity';
 import { UserRepository } from 'src/auth/user.repository';
 import { TagRepository } from '../tag/tag.repository';
+import { CompanyRepository } from '../company/company.repository';
 
 @Injectable()
 export class ExperienceService {
@@ -18,6 +19,9 @@ export class ExperienceService {
 
     @InjectRepository(TagRepository)
     private tagRepository: TagRepository,
+
+    @InjectRepository(CompanyRepository)
+    private companyRepository: CompanyRepository,
   ) {}
 
   async getAllExperience(user: User): Promise<Experience[]> {
@@ -28,6 +32,7 @@ export class ExperienceService {
       order: {
         start: 'DESC',
       },
+      relations: ['experience_company'],
     });
   }
   async getExperienceByUser(user: User, id: string): Promise<Experience[]> {
@@ -39,6 +44,7 @@ export class ExperienceService {
       order: {
         start: 'DESC',
       },
+      relations: ['experience_company'],
     });
   }
 
@@ -75,6 +81,11 @@ export class ExperienceService {
       experience.experience_tags = await this.tagRepository.findByIds(
         createExperienceDto.experience_tags,
       );
+    }
+    if (createExperienceDto.experience_company) {
+      experience.experience_company = await this.companyRepository.findOne({
+        id: createExperienceDto.experience_company,
+      });
     }
 
     experience.updated_by = user;

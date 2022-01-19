@@ -6,8 +6,14 @@ export class CreateJobDto {
   name: string;
   description: string;
   company_name: string;
-  type: EMPLOYMENTTYPE;
+  spoc: { id?: string; email: string; label?: string; spoc_id: string };
+  job_tags: { id?: string; name: 'string' }[];
+  type: string;
   is_active: boolean;
   vacancies: number;
   id?: string;
+  req_id: string;
+  submited_by: string;
+  priority: string;
+  req_date: Date;
 }

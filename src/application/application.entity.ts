@@ -1,6 +1,5 @@
 import { User } from 'src/auth/user.entity';
 import { Job } from 'src/job/job.entity';
-import { Product } from 'src/products/products.entity';
 import { Tag } from 'src/tag/tag.entity';
 import internal from 'stream';
 import {
@@ -18,20 +17,28 @@ import {
   JoinTable,
   Unique,
 } from 'typeorm';
-import { APPLICATIONSTAGE } from './enum/application-stage.enum';
+import { Action } from '../actions/action.entity';
+import { Stage } from 'src/stages/stage.entity';
+import { Profile } from 'src/profile/profile.entity';
 
 @Entity()
-@Unique(['job', 'applied_by'])
 export class Application extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ default: APPLICATIONSTAGE.APPLIED })
-  stage: APPLICATIONSTAGE;
-
-  @ManyToOne(() => User, (user) => user.application)
+  @ManyToOne(() => Profile, (profile) => profile.application, {
+    eager: true,
+  })
   @JoinColumn()
-  applied_by: User;
+  applicant: Profile;
+
+  @OneToMany(
+    () => ApplicationActivity,
+    (applicationActivity) => applicationActivity.application,
+    { cascade: ['insert', 'update'] },
+  )
+  @JoinColumn()
+  logs: ApplicationActivity[];
 
   @ManyToOne(() => Job, (job) => job.application)
   @JoinColumn()
@@ -40,6 +47,44 @@ export class Application extends BaseEntity {
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn()
   created_by: User;
+
+  @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn()
+  updated_by: User;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updated_at: Date;
+}
+
+@Entity()
+export class ApplicationActivity extends BaseEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ nullable: true })
+  description: string;
+
+  @ManyToOne(() => Application, (application) => application.logs)
+  @JoinColumn()
+  application: Application;
+
+  @ManyToOne(() => Action, (action) => action.application)
+  @JoinColumn()
+  action: Action;
+
+  @ManyToOne(() => Profile, (profile) => profile.application_activity)
+  @JoinColumn()
+  profile: Profile;
 
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn()

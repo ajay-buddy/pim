@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -23,8 +24,8 @@ export class TagController {
     return this.tagService.getAllTag();
   }
 
-  @Get('/find/:key')
-  getMatchTag(@Param('key') key: string): Promise<Tag[]> {
+  @Get('/find')
+  getMatchTag(@Query('name') key: string): Promise<Tag[]> {
     return this.tagService.getMatchTag(key);
   }
 

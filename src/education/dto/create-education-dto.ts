@@ -11,4 +11,7 @@ export class CreateEducationDto {
   user_id?: string;
   id?: string;
   education_tags?: string[];
+  education_collage: string;
+  education_course: string;
+  education_university: string;
 }

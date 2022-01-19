@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.stratergy';
 import { ProfileRepository } from '../profile/profile.repository';
+import { ProfileService } from '../profile/profile.service';
+import { TagRepository } from '../tag/tag.repository';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -16,10 +18,14 @@ import { ProfileRepository } from '../profile/profile.repository';
         expiresIn: 3600,
       },
     }),
-    TypeOrmModule.forFeature([UserRepository, ProfileRepository]),
+    TypeOrmModule.forFeature([
+      UserRepository,
+      ProfileRepository,
+      TagRepository,
+    ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, ProfileService],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

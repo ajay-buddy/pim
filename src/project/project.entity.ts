@@ -1,6 +1,6 @@
 import { User } from 'src/auth/user.entity';
+import { Company } from 'src/company/company.entity';
 import { PROJECTTYPE } from 'src/job/enum/employment_type.enum';
-import { Product } from 'src/products/products.entity';
 import { Tag } from 'src/tag/tag.entity';
 import {
   BaseEntity,
@@ -38,6 +38,10 @@ export class Project extends BaseEntity {
 
   @Column()
   type: PROJECTTYPE;
+
+  @ManyToOne(() => Company, (company) => company.projects)
+  @JoinTable()
+  project_company: Company;
 
   @ManyToMany(() => Tag, (tag) => tag.projects, { eager: true })
   @JoinTable()

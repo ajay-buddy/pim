@@ -1,4 +1,5 @@
 import { User } from 'src/auth/user.entity';
+import { Collage } from 'src/collage/collage.entity';
 import { Tag } from 'src/tag/tag.entity';
 import {
   BaseEntity,
@@ -15,6 +16,8 @@ import {
   JoinTable,
 } from 'typeorm';
 import { EDUCATIONTYPE } from './eunm/education-type.enum';
+import { University } from '../university/university.entity';
+import { Course } from '../course/course.entity';
 
 @Entity()
 export class Education extends BaseEntity {
@@ -41,6 +44,18 @@ export class Education extends BaseEntity {
   @ManyToMany(() => Tag, (tag) => tag.education, { eager: true })
   @JoinTable()
   education_tags: Tag[];
+
+  @ManyToOne(() => Collage, (collage) => collage.education)
+  @JoinTable()
+  education_collage: Collage;
+
+  @ManyToOne(() => Course, (course) => course.education)
+  @JoinTable()
+  education_course: Course;
+
+  @ManyToOne(() => University, (university) => university.education)
+  @JoinTable()
+  education_university: University;
 
   @ManyToOne(() => User, (user) => user.education)
   @JoinColumn()

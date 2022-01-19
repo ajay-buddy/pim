@@ -1,4 +1,3 @@
-import { Product } from 'src/products/products.entity';
 import { Project } from 'src/project/project.entity';
 import { Profile } from '../profile/profile.entity';
 import {
@@ -34,6 +33,9 @@ export class Tag extends BaseEntity {
 
   @ManyToMany(() => Profile, (profile) => profile.profile_tags)
   profile: Profile[];
+
+  @ManyToMany(() => Profile, (profile) => profile.profile_stags)
+  s_profile: Profile[];
 
   @ManyToMany(() => Job, (job) => job.job_tags)
   job: Job[];
