@@ -7,7 +7,13 @@ import { User } from 'src/auth/user.entity';
 import { UserRepository } from '../auth/user.repository';
 import { TagRepository } from '../tag/tag.repository';
 import { USERTYPE } from 'src/auth/enum/user-type.enum';
-import { getRepository, In, Like, SelectQueryBuilder } from 'typeorm';
+import {
+  getManager,
+  getRepository,
+  In,
+  Like,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { CandidateFilterDto } from './dto/candidate-filter.dto';
 import { Tag } from 'src/tag/tag.entity';
 
@@ -28,18 +34,18 @@ export class ProfileService {
     return await this.profileRepository.find({
       join: {
         alias: 'profiles',
-        innerJoin: {
-          users: 'profiles.belongs_to',
-        },
       },
 
       where: (qb: SelectQueryBuilder<Profile>) => {
-        qb.where('users.user_type = :type', {
+        qb.where('profiles.user_type = :type', {
           type: type.toUpperCase(),
         });
-        qb.andWhere('profiles.name LIKE(:name)', { name: `${name}%` });
+        qb.where('LOWER(profiles.name) LIKE(:name)', {
+          name: `${name.toLowerCase()}%`,
+        });
+        // qb.where('profiles.email LIKE(:name)', { name: `${name}%` });
       },
-      relations: ['belongs_to'],
+      relations: [],
     });
   }
 
@@ -75,12 +81,14 @@ export class ProfileService {
       },
 
       where: (qb: SelectQueryBuilder<Profile>) => {
-        qb.innerJoinAndSelect('profiles.belongs_to', 'users');
-        qb.where('users.user_type = :type', {
+        // qb.innerJoinAndSelect('profiles.belongs_to', 'users');
+        qb.where('profiles.user_type = :type', {
           type: type.toUpperCase(),
         });
         if (name) {
-          qb.andWhere('profiles.name LIKE(:name)', { name: `%${name}%` });
+          qb.andWhere('LOWER(profiles.name) LIKE(:name)', {
+            name: `%${name.toLowerCase()}%`,
+          });
         }
         if (phone) {
           qb.andWhere('profiles.phone LIKE(:phone)', { phone: `%${phone}%` });
@@ -130,8 +138,8 @@ export class ProfileService {
         }
 
         if (headline) {
-          qb.andWhere('profiles.headline LIKE(:headline)', {
-            headline: `%${headline}%`,
+          qb.andWhere('LOWER(profiles.headline) LIKE(:headline)', {
+            headline: `%${headline.toLowerCase()}%`,
           });
         }
         if (c_location) {
@@ -146,8 +154,8 @@ export class ProfileService {
         }
 
         if (email) {
-          qb.andWhere('profiles.email LIKE(:email)', {
-            email: `%${email}%`,
+          qb.andWhere('LOWER(profiles.email) LIKE(:email)', {
+            email: `%${email.toLowerCase()}%`,
           });
         }
         if (p_tags) {
@@ -233,10 +241,27 @@ export class ProfileService {
     });
   }
 
+  async createBulkProfile(createProfileDto: CreateProfileDto[], user: User) {
+    const success = [];
+    const failed = [];
+
+    for (let i = 0; i < createProfileDto.length; i++) {
+      try {
+        await this.createProfile(createProfileDto[i], user);
+        success.push(createProfileDto[i]);
+      } catch (err) {
+        console.log(err);
+        failed.push(createProfileDto[i]);
+      }
+    }
+    return { success, failed };
+  }
+
   async createProfile(
     createProfileDto: CreateProfileDto,
     user: User,
   ): Promise<Profile> {
+    const manager = getManager();
     let profile = null;
     if (createProfileDto.id) {
       console.log(createProfileDto, profile);
@@ -247,7 +272,8 @@ export class ProfileService {
       profile = new Profile();
       profile.created_by = user;
     }
-    profile.user_type = user.user_type;
+    console.log(createProfileDto, createProfileDto.user_type, user.user_type);
+    profile.user_type = createProfileDto.user_type || user.user_type;
 
     const profileUser = await this.userRepository.findOne({
       id: createProfileDto.user_id,
@@ -346,7 +372,8 @@ export class ProfileService {
     profile.profile_status = createProfileDto.profile_status;
 
     profile.updated_by = user;
-    return profile.save();
+    return manager.save(profile);
+    // return profile.save();
   }
 
   async editProfile(

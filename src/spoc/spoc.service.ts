@@ -41,10 +41,14 @@ export class SpocService {
 
       where: (qb: SelectQueryBuilder<Spoc>) => {
         if (name) {
-          qb.andWhere('spoc.name LIKE(:name)', { name: `%${name}%` });
+          qb.andWhere('LOWER(spoc.name) LIKE(:name)', {
+            name: `%${name.toLowerCase()}%`,
+          });
         }
         if (email) {
-          qb.andWhere('spoc.email LIKE(:email)', { email: `%${email}%` });
+          qb.andWhere('LOWER(spoc.email) LIKE(:email)', {
+            email: `%${email.toLowerCase()}%`,
+          });
         }
         if (phone) {
           qb.andWhere('spoc.phone LIKE(:phone)', { phone: `%${phone}%` });

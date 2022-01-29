@@ -14,6 +14,8 @@ import {
   ManyToMany,
   JoinTable,
   Tree,
+  TreeChildren,
+  TreeParent,
 } from 'typeorm';
 import {
   Application,
@@ -23,6 +25,11 @@ import { Spoc } from 'src/spoc/spoc.entity';
 import { Action } from 'src/actions/action.entity';
 
 @Entity()
+@Tree('closure-table', {
+  closureTableName: 'profile_closure',
+  ancestorColumnName: (column) => 'ancestor_' + column.propertyName,
+  descendantColumnName: (column) => 'descendant_' + column.propertyName,
+})
 export class Profile extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -82,11 +89,29 @@ export class Profile extends BaseEntity {
   active: boolean = false;
   @Column('boolean', { default: false })
   engaged: boolean = false;
-  @Column({ type: 'decimal', precision: 7, scale: 2, default: 0 })
+  @Column({
+    type: 'decimal',
+    precision: 7,
+    scale: 2,
+    default: 0,
+    nullable: true,
+  })
   experience: number;
-  @Column({ type: 'decimal', precision: 7, scale: 2, default: 0 })
+  @Column({
+    type: 'decimal',
+    precision: 7,
+    scale: 2,
+    default: 0,
+    nullable: true,
+  })
   current_ctc: number;
-  @Column({ type: 'decimal', precision: 7, scale: 2, default: 0 })
+  @Column({
+    type: 'decimal',
+    precision: 7,
+    scale: 2,
+    default: 0,
+    nullable: true,
+  })
   expected_ctc: number;
   @ManyToMany(() => Tag, (tag) => tag.profile, { eager: true })
   @JoinTable()
@@ -100,10 +125,12 @@ export class Profile extends BaseEntity {
   @OneToMany(() => Spoc, (spoc) => spoc.owner)
   spoc_owner: Spoc[];
 
-  @ManyToOne(() => Profile, (profile) => profile.managee)
+  // @ManyToOne(() => Profile, (profile) => profile.managee)
+  @TreeParent()
   manager: Profile;
 
-  @OneToMany(() => Profile, (profile) => profile.manager)
+  // @OneToMany(() => Profile, (profile) => profile.manager)
+  @TreeChildren()
   managee: Profile[];
 
   @ManyToMany(() => Spoc, (spoc) => spoc.recruiters)

@@ -40,7 +40,7 @@ export class Application extends BaseEntity {
   @JoinColumn()
   logs: ApplicationActivity[];
 
-  @ManyToOne(() => Job, (job) => job.application)
+  @ManyToOne(() => Job, (job) => job.application, { eager: true })
   @JoinColumn()
   job: Job;
 

@@ -23,8 +23,26 @@ export class ApplicationController {
   constructor(private applicationService: ApplicationService) {}
 
   @Get('/all')
-  getAllJob(@Query('page') page: string, @Query('limit') limit: string) {
-    return this.applicationService.getAllApplication(page, limit);
+  getAllJob(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+    @Query('applicant_name') applicant_name: string,
+    @Query('applicant_email') applicant_email: string,
+    @Query('applicant_phone') applicant_phone: string,
+    @Query('job_req_id') job_req_id: string,
+    @Query('job_spoc_name') job_spoc_name: string,
+    @Query('job_company_name') job_company_name: string,
+  ) {
+    return this.applicationService.getAllApplication(
+      page,
+      limit,
+      applicant_name,
+      applicant_email,
+      applicant_phone,
+      job_req_id,
+      job_spoc_name,
+      job_company_name,
+    );
   }
 
   @Get('/my')

@@ -6,6 +6,7 @@ import { UserRepository } from '../auth/user.repository';
 import { ProfileRepository } from '../profile/profile.repository';
 import { User } from '../auth/user.entity';
 import { Profile } from '../profile/profile.entity';
+import axios from 'axios';
 
 @Injectable()
 export class DashboardService {
@@ -18,7 +19,7 @@ export class DashboardService {
   ) {}
 
   async getMyProfile(user: User) {
-    return this.profileRepository.findOne({
+    const profile = await this.profileRepository.findOne({
       join: {
         alias: 'profiles',
       },
@@ -29,8 +30,12 @@ export class DashboardService {
       relations: ['belongs_to', 'managee'],
     });
 
-    // const manager = getManager();
-    // const tree = await manager.getTreeRepository(Profile).findRoots();
-    // return tree;
+    const manager = getManager();
+    const tree = await manager
+      .getTreeRepository(Profile)
+      .findDescendantsTree(profile);
+    return tree;
+
+    return profile;
   }
 }

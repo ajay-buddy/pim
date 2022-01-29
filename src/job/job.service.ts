@@ -62,16 +62,18 @@ export class JobService {
           });
         }
         if (submited_by) {
-          qb.andWhere('job.submited_by LIKE(:submited_by)', {
-            submited_by: `%${submited_by}%`,
+          qb.andWhere('LOWER(job.submited_by) LIKE(:submited_by)', {
+            submited_by: `%${submited_by.toLowerCase()}%`,
           });
         }
         if (email) {
-          qb.andWhere('job.email LIKE(:email)', { email: `%${email}%` });
+          qb.andWhere('LOWER(job.email) LIKE(:email)', {
+            email: `%${email.toLowerCase()}%`,
+          });
         }
         if (priority) {
-          qb.andWhere('job.priority LIKE(:priority)', {
-            priority: `%${priority}%`,
+          qb.andWhere('LOWER(job.priority) LIKE(:priority)', {
+            priority: `%${priority.toLowerCase()}%`,
           });
         }
         if (req_id) {

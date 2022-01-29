@@ -38,7 +38,7 @@ export class Company extends BaseEntity {
   @JoinColumn()
   experience: Experience[];
 
-  @OneToMany(() => Job, (job) => job.job_company, { eager: true })
+  @OneToMany(() => Job, (job) => job.job_company)
   @JoinColumn()
   job: Job[];
 

@@ -136,14 +136,16 @@ export class ProfileController {
     @GetUser() user: User,
     @Body() createProfileDto: CreateProfileDto,
   ): Promise<Profile> {
-    // if (createProfileDto.id) {
-    //   return this.profileService.editProfile(
-    //     createProfileDto,
-    //     user,
-    //     createProfileDto.id,
-    //   );
-    // }
     return this.profileService.createProfile(createProfileDto, user);
+  }
+
+  @Post('/create/bulk')
+  @UsePipes(ValidationPipe)
+  createBulkProfile(
+    @GetUser() user: User,
+    @Body() createProfileDto: CreateProfileDto[],
+  ) {
+    return this.profileService.createBulkProfile(createProfileDto, user);
   }
 
   @Post('/edit/:id')

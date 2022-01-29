@@ -16,6 +16,7 @@ import { ActionRepository } from '../actions/action.repository';
 import { StageRepository } from '../stages/stage.repository';
 import { ProfileRepository } from '../profile/profile.repository';
 import { Action } from 'src/actions/action.entity';
+import { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class ApplicationService {
@@ -41,17 +42,97 @@ export class ApplicationService {
     private profileRepository: ProfileRepository,
   ) {}
 
-  async getAllApplication(page?: string, limit?: string) {
+  async getAllApplication(
+    page: string,
+    limit: string,
+    applicant_name: string,
+    applicant_email: string,
+    applicant_phone: string,
+    job_req_id: string,
+    job_spoc_name: string,
+    job_company_name: string,
+  ) {
     const take = parseInt(limit) || 10;
     const skip = (parseInt(page) - 1) * take || 0;
+
+    console.log(
+      '===>',
+      applicant_name,
+      applicant_email,
+      applicant_phone,
+      job_req_id,
+      job_spoc_name,
+      job_company_name,
+    );
+
     return this.applicationRepository.findAndCount({
+      join: {
+        alias: 'application',
+      },
+
+      where: (qb: SelectQueryBuilder<Application>) => {
+        if (applicant_name || applicant_email || applicant_phone) {
+          qb.innerJoinAndSelect('application.applicant', 'applicants');
+        }
+        if (applicant_name) {
+          qb.where('LOWER(applicants.name) LIKE(:name)', {
+            name: `%${applicant_name.toLowerCase()}%`,
+          });
+        }
+        if (applicant_email) {
+          qb.where('LOWER(applicants.email) LIKE(:email)', {
+            email: `%${applicant_email.toLowerCase()}%`,
+          });
+        }
+        if (applicant_phone) {
+          qb.where('applicants.phone LIKE(:phone)', {
+            phone: `%${applicant_phone}%`,
+          });
+        }
+        if (job_req_id || job_spoc_name || job_company_name) {
+          qb.innerJoinAndSelect('application.job', 'job');
+          qb.innerJoinAndSelect('job.spoc', 'spoc');
+          // qb.innerJoinAndSelect('spoc.company', 'company');
+        }
+        if (job_req_id) {
+          qb.where('job.req_id = :job_req_id', {
+            job_req_id: `${job_req_id}`,
+          });
+        }
+        if (job_spoc_name) {
+          qb.where('LOWER(spoc.name) LIKE(:job_spoc_name)', {
+            job_spoc_name: `%${job_spoc_name.toLowerCase()}%`,
+          });
+        }
+        // if (job_company_name) {
+        //   qb.where('LOWER(company.name) LIKE(:job_company_name)', {
+        //     job_company_name: `%${job_company_name.toLowerCase()}%`,
+        //   });
+        // }
+      },
+      relations: [
+        'applicant',
+        'job',
+        'job.spoc',
+        'logs',
+        'logs.action',
+        'logs.profile',
+      ],
+      take: take,
+      skip: skip,
       order: {
         updated_at: 'DESC',
       },
-      take: take,
-      skip: skip,
-      relations: ['applicant', 'job', 'logs', 'logs.action', 'logs.profile'],
     });
+
+    //   {
+    //   order: {
+    //     updated_at: 'DESC',
+    //   },
+    //   take: take,
+    //   skip: skip,
+    //   relations: ['applicant', 'job', 'logs', 'logs.action', 'logs.profile'],
+    // });
   }
 
   async getApplicationById(id: string): Promise<Application> {
@@ -122,8 +203,11 @@ export class ApplicationService {
         application.job = found;
       }
     }
-
-    if (applicant && !application.applicant) {
+    if (
+      applicant &&
+      (!application.applicant ||
+        (application.applicant && application.applicant.id !== applicant.id))
+    ) {
       let found = null;
       if (applicant.id) {
         found = await this.profileRepository.findOne({ id: applicant.id });
@@ -135,6 +219,7 @@ export class ApplicationService {
         found = await this.profileRepository.findOne({ name: applicant.name });
       }
       if (found) {
+        console.log(found);
         application.applicant = found;
       }
     }

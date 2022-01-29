@@ -56,7 +56,7 @@ export class Job extends BaseEntity {
   @JoinTable()
   job_tags: Tag[];
 
-  @ManyToOne(() => Spoc, (spoc) => spoc.jobs)
+  @ManyToOne(() => Spoc, (spoc) => spoc.jobs, { eager: true })
   @JoinColumn()
   spoc: Spoc;
 
