@@ -28,7 +28,7 @@ export class ProfileService {
 
     @InjectRepository(TagRepository)
     private tagRepository: TagRepository,
-  ) {}
+  ) { }
 
   async findAllProfile(type: string, name: string) {
     return await this.profileRepository.find({
@@ -40,7 +40,7 @@ export class ProfileService {
         qb.where('profiles.user_type = :type', {
           type: type.toUpperCase(),
         });
-        qb.where('LOWER(profiles.name) LIKE(:name)', {
+        qb.andWhere('LOWER(profiles.name) LIKE(:name)', {
           name: `${name.toLowerCase()}%`,
         });
         // qb.where('profiles.email LIKE(:name)', { name: `${name}%` });
@@ -345,11 +345,11 @@ export class ProfileService {
     if (createProfileDto.manager) {
       const manager = createProfileDto.manager.id
         ? await this.profileRepository.findOne({
-            id: createProfileDto.manager.id,
-          })
+          id: createProfileDto.manager.id,
+        })
         : await this.profileRepository.findOne({
-            email: createProfileDto.manager.email,
-          });
+          email: createProfileDto.manager.email,
+        });
       profile.manager = manager;
     }
 

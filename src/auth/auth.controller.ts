@@ -19,7 +19,7 @@ import { User } from './user.entity';
 // import AWS from 'aws-sdk';
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('/signup')
   signUp(
@@ -58,10 +58,11 @@ export class AuthController {
     @Body() authUploadImageDto: AuthUploadImageDto,
   ): Promise<string> {
     const { image_name, image_type } = authUploadImageDto;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const AWS = require('aws-sdk');
     const s3 = new AWS.S3({
-      accessKeyId: process.env.accessKeyId,
-      secretAccessKey: process.env.secretAccessKey,
+      accessKeyId: 'AKIAV55WFMOZ2CBLZXHK',
+      secretAccessKey: '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',
       region: 'ap-south-1',
       signatureVersion: 'v4',
     });

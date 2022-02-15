@@ -1,5 +1,4 @@
 import { EntityRepository, Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import {
@@ -11,7 +10,8 @@ import {
 import { Profile } from 'src/profile/profile.entity';
 import { ProfileService } from '../profile/profile.service';
 import { CreateProfileDto } from '../profile/dto/create-profile-dto';
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const bcrypt = require('bcryptjs');
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   async signUp(
@@ -19,8 +19,9 @@ export class UserRepository extends Repository<User> {
     login_user: User,
     profileService: ProfileService,
   ): Promise<{ username: string }> {
+
     const { username, password, user_type } = authCredentialsDto;
-    const salt = await bcrypt.genSalt();
+    const salt = await bcrypt.genSaltSync();
     const user = new User();
 
     user.username = username;
@@ -79,6 +80,6 @@ export class UserRepository extends Repository<User> {
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {
-    return bcrypt.hash(password, salt);
+    return bcrypt.hashSync(password, salt);
   }
 }

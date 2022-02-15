@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { SharedModule } from './shared/shared.module';
-import { EventsGateway } from './test.gateway';
+// import { SharedModule } from './shared/shared.module';
+// import { EventsGateway } from './test.gateway';
 
 @Module({
-  imports: [SharedModule],
-  providers: [EventsGateway],
+  imports: [],
+  providers: [],
 })
-export class AppModule1 {}
+export class AppModule1 { }

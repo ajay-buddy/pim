@@ -13,7 +13,6 @@ import {
   JoinTable,
   ManyToOne,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { USERTYPE } from './enum/user-type.enum';
 import { Application } from 'src/application/application.entity';
 import { Profile } from 'src/profile/profile.entity';
@@ -21,7 +20,8 @@ import { Education } from '../education/education.entity';
 import { Experience } from 'src/experience/experience.entity';
 import { Project } from 'src/project/project.entity';
 import { classToPlain, Exclude } from 'class-transformer';
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const bcrypt = require('bcryptjs');
 @Entity()
 @Unique(['username'])
 export class User extends BaseEntity {
@@ -84,7 +84,7 @@ export class User extends BaseEntity {
   }
 
   async validatePassword(password: string): Promise<boolean> {
-    const hash = await bcrypt.hash(password, this.salt);
+    const hash = await bcrypt.hashSync(password, this.salt);
     return hash === this.password;
   }
 }

@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/type-orm-config';
 import { AuthModule } from './auth/auth.module';
-import { BullModule } from '@nestjs/bull';
-import { NotificationModule } from './notification/notification.module';
+// import { BullModule } from '@nestjs/bull';
+// import { NotificationModule } from './notification/notification.module';
 import { ConfigModule } from '@nestjs/config';
 import { AppModule1 } from './app/app.module';
 import { ProfileModule } from './profile/profile.module';
@@ -27,14 +27,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot(typeOrmConfig),
-    BullModule.forRoot({
-      redis: {
-        host: 'redis',
-        port: 6379,
-      },
-    }),
     AuthModule,
-    NotificationModule,
+    // NotificationModule,
     AppModule1,
 
     ProfileModule,
@@ -54,4 +48,4 @@ import { DashboardModule } from './dashboard/dashboard.module';
     DashboardModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

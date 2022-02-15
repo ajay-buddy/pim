@@ -22,7 +22,7 @@ export class AuthService {
 
     private jwtService: JwtService,
     private profileService: ProfileService,
-  ) {}
+  ) { }
 
   async signUp(
     authCredentialsDto: AuthCredentialsDto,
