@@ -67,7 +67,7 @@ export class Profile extends BaseEntity {
   llPhone: string;
   @Column({ nullable: true })
   alternatePhone: string;
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   email: string;
   @Column({ nullable: true })
   address: string;

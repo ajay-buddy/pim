@@ -19,7 +19,7 @@ export class TagService {
 
   async getMatchTag(key: string): Promise<Tag[]> {
     return this.tagRepository.find({
-      name: Like(`%${key}%`),
+      name: Like(`%${key.toLowerCase()}%`),
     });
   }
 
@@ -28,7 +28,7 @@ export class TagService {
 
     const tag = new Tag();
 
-    tag.name = name;
+    tag.name = name.toLowerCase();
 
     return tag.save();
   }
@@ -38,7 +38,7 @@ export class TagService {
 
     const tag = await this.tagRepository.findOne({ id });
 
-    tag.name = name;
+    tag.name = name.toLowerCase();
 
     return tag.save();
   }

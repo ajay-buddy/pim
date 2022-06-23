@@ -269,8 +269,13 @@ export class ProfileService {
         id: createProfileDto.id,
       });
     } else {
-      profile = new Profile();
-      profile.created_by = user;
+      const found = await this.profileRepository.findOne({email: createProfileDto.email});
+      if(found) {
+        profile = found;
+      } else {
+        profile = new Profile();
+        profile.created_by = user;
+      }
     }
     console.log(createProfileDto, createProfileDto.user_type, user.user_type);
     profile.user_type = createProfileDto.user_type || user.user_type;

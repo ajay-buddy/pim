@@ -147,14 +147,17 @@ export class ApplicationService {
     const skip = (parseInt(page) - 1) * take || 0;
     return this.applicationRepository.findAndCount({
       where: {
-        applied_by: user,
+        applicant: user,
       },
       order: {
         updated_at: 'DESC',
       },
       take: take,
       skip: skip,
-      relations: ['job', 'logs', 'logs.action', 'logs.stage'],
+      relations: ['applicant',
+      'logs',
+      'logs.action',
+      'logs.profile',],
     });
   }
 

@@ -115,7 +115,12 @@ export class SpocService {
     if (id) {
       spoc = await this.spocRepository.findOne({ id });
     } else {
-      spoc = new Spoc();
+      const found = await this.spocRepository.findOne({email})
+      if(found) {
+        spoc = found;
+      } else {
+        spoc = new Spoc();
+      }
     }
 
     if (company.id) {

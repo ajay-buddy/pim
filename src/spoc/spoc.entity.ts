@@ -21,7 +21,7 @@ export class Spoc extends BaseEntity {
   id: string;
   @Column({ nullable: true })
   name: string;
-  @Column({ nullable: true })
+  @Column({ nullable: false, unique: true })
   email: string;
 
   @Column({ nullable: true })

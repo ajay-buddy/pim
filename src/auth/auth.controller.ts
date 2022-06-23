@@ -16,6 +16,8 @@ import { ChangeManagerDto } from './dto/change-manager.dto';
 import { GetUser } from './get-user.decorator';
 import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
+import axios from 'axios';
+import {PDFExtract, PDFExtractOptions} from 'pdf.js-extract';
 // import AWS from 'aws-sdk';
 @Controller('auth')
 export class AuthController {
@@ -47,7 +49,7 @@ export class AuthController {
 
   @Get('/me')
   @UseGuards(AuthGuard('jwt'))
-  async test(@GetUser() user: User) {
+  async me(@GetUser() user: User) {
     const data = await this.authService.dashboard(user);
     return { id: user.id, username: user.username, data };
   }
@@ -61,15 +63,13 @@ export class AuthController {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const AWS = require('aws-sdk');
     const s3 = new AWS.S3({
-      accessKeyId: 'AKIAV55WFMOZ2CBLZXHK',
-      secretAccessKey: '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',
-      region: 'ap-south-1',
+      accessKeyId: process.env.accessKeyId,
+      secretAccessKey: process.env.secretAccessKey,
+      region: process.env.REGION,
       signatureVersion: 'v4',
     });
-
     const myBucket = process.env.profile_bucket;
     const signedUrlExpireSeconds = 60 * 5;
-    console.log('===>', image_name);
     return s3.getSignedUrl('putObject', {
       Bucket: myBucket,
       Key: image_name,
@@ -105,5 +105,22 @@ export class AuthController {
     @Body() changeManagerDto: ChangeManagerDto,
   ): Promise<User> {
     return this.authService.changeManger(user, changeManagerDto);
+  }
+
+  @Get('/testing')
+  test() {
+  const pdfExtract = new PDFExtract();
+      const options: PDFExtractOptions = {}; /* see below */
+    pdfExtract.extract("./test1.pdf", options)
+        .then(data => {
+          for(let i = 0; i< data.pages.length; i++) {
+            for(let j = 0; j < data.pages[i].content.length; j++) {
+              console.log("===>", data.pages[i].content[j].str)
+            }
+            
+          }
+        })
+        .catch(err=> console.log("+++++", err));
+    return "Hello"
   }
 }

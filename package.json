@@ -45,6 +45,7 @@
     "node-pre-gyp": "^0.17.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "pdf.js-extract": "^0.2.0",
     "pdfreader": "^1.2.14",
     "pg": "^8.6.0",
     "reflect-metadata": "^0.1.13",

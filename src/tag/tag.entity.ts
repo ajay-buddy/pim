@@ -19,7 +19,7 @@ import { Experience } from 'src/experience/experience.entity';
 export class Tag extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column({ unique: true })
+  @Column({ unique: false })
   name: string;
 
   @ManyToMany(() => Project, (project) => project.project_tags)
